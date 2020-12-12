@@ -4,6 +4,23 @@ let addItemForm = document.querySelector("#addItemForm");
 // grab inputed action item into the actionItem container and to show them on the list by append or prepend
 let itemList = document.querySelector(".actionItems");
 
+// Get All actionItems from Chrome Storage
+let storage = chrome.storage.sync;
+
+storage.get(["actionItems"], (data) => {
+  let actionItems = data.actionItems;
+  // call the renderActionItems with pass the actionItems
+  renderActionItems(actionItems);
+});
+
+// Create renderActionItems() function, with pass the actionItems
+const renderActionItems = (actionItems) => {
+  // loop through (using forEach) the actionItems
+  actionItems.forEach((item) => {
+    renderActionItem(item.text);
+  });
+};
+
 addItemForm.addEventListener("submit", (e) => {
   // to prevent auto loading progressbar, we set preventdefault on 'e'
   e.preventDefault();
