@@ -1,9 +1,7 @@
 // create form actionItem
 let addItemForm = document.querySelector("#addItemForm");
-
 // grab inputed action item into the actionItem container and to show them on the list by append or prepend
 let itemList = document.querySelector(".actionItems");
-
 // Get All actionItems from Chrome Storage
 let storage = chrome.storage.sync;
 
@@ -11,13 +9,14 @@ storage.get(["actionItems"], (data) => {
   let actionItems = data.actionItems;
   // call the renderActionItems with pass the actionItems
   renderActionItems(actionItems);
+  console.log(actionItems);
 });
 
 // Create renderActionItems() function, with pass the actionItems
 const renderActionItems = (actionItems) => {
   // loop through (using forEach) the actionItems
   actionItems.forEach((item) => {
-    renderActionItem(item.text);
+    renderActionItem(item.text, item.id, item.completed);
   });
 };
 
@@ -42,7 +41,8 @@ addItemForm.addEventListener("submit", (e) => {
 const add = (text) => {
   // create an object for the value on a {key: value} chrome sync
   let actionItem = {
-    id: 1,
+    // apply the uudv4 to get uniqe identifier on every data
+    id: uuidv4(),
     // using new current date as per action items added on tat day, and using .toString() to convert the date appear on object data
     added: new Date().toString(),
     //  create text object which will be pass into add() function
@@ -79,8 +79,37 @@ const add = (text) => {
   });
 };
 
+// Create a markUnmarkCompleted() function to set the item completed in chrome storage
+const markUnmarkCompleted = (id) => {
+  // 1. grab the list of items
+  storage.get(["actionItems"], (data) => {
+    // 2. find item we clicked on
+    let items = data.actionItems;
+    // 3. find the index
+    let foundItemIndex = items.findIndex((item) => item.id == id);
+    if (foundItemIndex >= 0) {
+      items[foundItemIndex].completed = true;
+      chrome.storage.sync.set({
+        actionItems: items,
+      });
+    }
+  });
+};
+
+// handle completed element function
+const handleCompletedEventListener = (e) => {
+  // grab the id
+  const id = e.target.parentElement.parentElement.getAttribute("data-id");
+  const parent = e.target.parentElement.parentElement;
+
+  // adding completed class on the target parent, after being through click event listener
+  parent.classList.add("completed");
+  // call the markUnmarkCompleted function
+  markUnmarkCompleted(id);
+};
+
 // create a renderActionItem() function
-const renderActionItem = (text) => {
+const renderActionItem = (text, id, completed) => {
   // the goal is to create HTML structure using javascrip, by mirroring the created HTML structure that we've did
   // create the individual element function to easily reacting on every changes on action item lists, instead of using inerHTML , which quite bit difficult to arrange
 
@@ -100,6 +129,15 @@ const renderActionItem = (text) => {
                 <i class="fas fa-check" aria-hidden="true"></i>
               </div>
   `;
+
+  if (completed) {
+    element.classList.add("completed");
+  }
+  //  x
+  element.setAttribute("data-id", id);
+
+  // Create an event listenener on the checkmark element
+  checkEl.addEventListener("click", handleCompletedEventListener);
 
   // setup text element, using textContent, which equal to innerText as well
   textEl.textContent = text;

@@ -122,6 +122,12 @@ body {
 /* targeting the icon to make it green */
 .actionItem__checkBox i {
   color: #56e452;
+  opacity: 0;
+}
+
+/* create the opacity on checkbox hover */
+.actionItem__check:hover i {
+  opacity: 1;
 }
 
 .actionItem__check {
@@ -145,4 +151,14 @@ body {
 
 .actionItem__item.completed .actionItem__checkBox {
   border-color: #56e452;
+}
+
+.actionItem__check * {
+  /* to prevent from checkbox click using it's checkBox parent container */
+  pointer-events: none;
+}
+
+/* after action item will be click and completed, so the checkmark will appear with opa 1 */
+.actionItem__item.completed .actionItem__check i {
+  opacity: 1;
 }
