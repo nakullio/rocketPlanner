@@ -138,3 +138,11 @@ body {
   font-size: 20px;
   cursor: pointer;
 }
+
+.actionItem__item.completed {
+  background-color: #b0f1ab;
+}
+
+.actionItem__item.completed .actionItem__checkBox {
+  border-color: #56e452;
+}
