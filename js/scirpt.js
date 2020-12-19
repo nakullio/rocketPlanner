@@ -10,9 +10,16 @@ let actionItemsUtils = new ActionItems();
 
 storage.get(["actionItems"], (data) => {
   let actionItems = data.actionItems;
+  console.log(actionItems);
+  createQuickActionListener();
   // call the renderActionItems with pass the actionItems
   renderActionItems(actionItems);
   actionItemsUtils.setProgress();
+  chrome.storage.onChanged.addListener(() => {
+    console.log("changed");
+    // call the setProgress
+    actionItemsUtils.setProgress();
+  });
 });
 
 // Create renderActionItems() function, with pass the actionItems
@@ -20,6 +27,26 @@ const renderActionItems = (actionItems) => {
   // loop through (using forEach) the actionItems
   actionItems.forEach((item) => {
     renderActionItem(item.text, item.id, item.completed);
+  });
+};
+
+const handleQuickActionListener = (e) => {
+  // get the text from listener that we've clicked
+  const text = e.target.getAttribute("data-text");
+  // add the click button text into input action items
+  actionItemsUtils.add(text, (actionItem) => {
+    // catch the callback function and render it like this
+    renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+  });
+};
+
+// Create an event listener for quick action buttons
+const createQuickActionListener = () => {
+  // select the target HTML button
+  let buttons = document.querySelectorAll(".quick-action");
+  // loop through the for every single button
+  buttons.forEach((button) => {
+    button.addEventListener("click", handleQuickActionListener);
   });
 };
 
@@ -31,11 +58,13 @@ addItemForm.addEventListener("submit", (e) => {
   let itemText = addItemForm.elements.namedItem("itemText").value;
   // we want to check if the itemText inside form was inputed empty, we want to prevent that
   if (itemText) {
-    actionItemsUtils.add(itemText);
-    // call the renderActionItem once we've got the text, asthis
-    renderActionItem(itemText);
-    // after we enter the vlaue on actionItem form. we'd like to clear the value in it to reset the form
-    addItemForm.elements.namedItem("itemText").value = "";
+    // add the empty function ()=>{} to make callback as a function
+    actionItemsUtils.add(itemText, (actionItem) => {
+      // call the renderActionItem once we've got the text, asthis
+      renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+      // after we enter the vlaue on actionItem form. we'd like to clear the value in it to reset the form
+      addItemForm.elements.namedItem("itemText").value = "";
+    });
   }
 });
 
@@ -66,9 +95,12 @@ const handleDeleteEventListener = (e) => {
 
   //  call the remove() function, and dont forget to pass in the sepcifict targeted 'td'
   //  this remove() will be remove items from chrome storage
-  actionItemsUtils.remove(id);
-  // remove from the DOM element using ChildNode.remove() method
-  parent.remove();
+  console.log("this is id", id);
+  // debug and callback
+  actionItemsUtils.remove(id, () => {
+    // remove from the DOM element using ChildNode.remove() method
+    parent.remove();
+  });
 };
 
 // create a renderActionItem() function

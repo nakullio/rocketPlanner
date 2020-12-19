@@ -2,7 +2,7 @@
 // we cannot have const fuction in a class, but we using an ES6 way
 class ActionItems {
   // Create add() function to save the Action Item data in a database
-  add = (text) => {
+  add = (text, callback) => {
     // create an object for the value on a {key: value} chrome sync
     let actionItem = {
       // apply the uudv4 to get uniqe identifier on every data
@@ -27,15 +27,20 @@ class ActionItems {
         items.push(actionItem);
       }
       // create chrome storage sync
-      chrome.storage.sync.set({
-        // the [actionItem] is an array for one action item
-        actionItems: items,
-      });
+      chrome.storage.sync.set(
+        {
+          // the [actionItem] is an array for one action item
+          actionItems: items,
+        },
+        () => {
+          callback(actionItem);
+        }
+      );
     });
   };
 
   // Create remove() function to remove the item from Chrome Storage
-  remove = (id) => {
+  remove = (id, callback) => {
     //   remove the actionItems
     // 1. grab the list of items
     storage.get(["actionItems"], (data) => {
@@ -50,10 +55,7 @@ class ActionItems {
           {
             actionItems: items,
           },
-          () => {
-            //   to call setProgress within the class, we must add this.function() to make them work
-            this.setProgress();
-          }
+          callback
         );
       }
     });
@@ -70,15 +72,9 @@ class ActionItems {
       let foundItemIndex = items.findIndex((item) => item.id == id);
       if (foundItemIndex >= 0) {
         items[foundItemIndex].completed = completedStatus;
-        chrome.storage.sync.set(
-          {
-            actionItems: items,
-          },
-          () => {
-            //   to call setProgress within the class, we must add this.function() to make them work
-            this.setProgress();
-          }
-        );
+        chrome.storage.sync.set({
+          actionItems: items,
+        });
       }
     });
   };
