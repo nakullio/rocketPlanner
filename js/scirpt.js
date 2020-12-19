@@ -9,7 +9,7 @@ storage.get(["actionItems"], (data) => {
   let actionItems = data.actionItems;
   // call the renderActionItems with pass the actionItems
   renderActionItems(actionItems);
-  console.log(actionItems);
+  setProgress();
 });
 
 // Create renderActionItems() function, with pass the actionItems
@@ -89,9 +89,14 @@ const markUnmarkCompleted = (id, completedStatus) => {
     let foundItemIndex = items.findIndex((item) => item.id == id);
     if (foundItemIndex >= 0) {
       items[foundItemIndex].completed = completedStatus;
-      chrome.storage.sync.set({
-        actionItems: items,
-      });
+      chrome.storage.sync.set(
+        {
+          actionItems: items,
+        },
+        () => {
+          setProgress();
+        }
+      );
     }
   });
 };
@@ -160,6 +165,28 @@ const renderActionItem = (text, id, completed) => {
   itemList.prepend(element);
 };
 
+// Update items progress in progressbar
+// Cretae a setProgress() function
+const setProgress = () => {
+  // grab the list of item
+  storage.get(["actionItems"], (data) => {
+    let actionItems = data.actionItems;
+    // how many completed item do we have?
+    let completedItems;
+    // total items are represent of the length of actionItems, bcoz actionItems state in Array
+    let totalItems = actionItems.length;
+    // check amount of completed items using es6 filter method
+    // null = false
+    // date = true
+    completedItems = actionItems.filter((item) => item.completed).length;
+    let progress = 0;
+    // calculate the progress
+    progress = completedItems / totalItems;
+    // animating the progressbar using circle.animate
+    circle.animate(progress);
+  });
+};
+
 var circle = new ProgressBar.Circle("#container", {
   color: "#010101",
   // This has to be the same size as the maximum width to
@@ -188,5 +215,3 @@ var circle = new ProgressBar.Circle("#container", {
 });
 circle.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
 circle.text.style.fontSize = "2rem";
-
-circle.animate(1.0); // Number from 0.0 to 1.0
