@@ -58,6 +58,19 @@ const handleCompletedEventListener = (e) => {
   }
 };
 
+// handle deleted element function
+const handleDeleteEventListener = (e) => {
+  // grab the id
+  const id = e.target.parentElement.parentElement.getAttribute("data-id");
+  const parent = e.target.parentElement.parentElement;
+
+  //  call the remove() function, and dont forget to pass in the sepcifict targeted 'td'
+  //  this remove() will be remove items from chrome storage
+  actionItemsUtils.remove(id);
+  // remove from the DOM element using ChildNode.remove() method
+  parent.remove();
+};
+
 // create a renderActionItem() function
 const renderActionItem = (text, id, completed) => {
   // the goal is to create HTML structure using javascrip, by mirroring the created HTML structure that we've did
@@ -88,6 +101,9 @@ const renderActionItem = (text, id, completed) => {
 
   // Create an event listenener on the checkmark element
   checkEl.addEventListener("click", handleCompletedEventListener);
+
+  // Create an event listenener on the deleted element
+  deleteEl.addEventListener("click", handleDeleteEventListener);
 
   // setup text element, using textContent, which equal to innerText as well
   textEl.textContent = text;

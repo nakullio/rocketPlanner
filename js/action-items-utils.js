@@ -34,6 +34,31 @@ class ActionItems {
     });
   };
 
+  // Create remove() function to remove the item from Chrome Storage
+  remove = (id) => {
+    //   remove the actionItems
+    // 1. grab the list of items
+    storage.get(["actionItems"], (data) => {
+      // 2. find item we clicked on
+      let items = data.actionItems;
+      // 3. find the index
+      let foundItemIndex = items.findIndex((item) => item.id == id);
+      if (foundItemIndex >= 0) {
+        //   using splice() method to remove an item
+        items.splice(foundItemIndex, 1);
+        chrome.storage.sync.set(
+          {
+            actionItems: items,
+          },
+          () => {
+            //   to call setProgress within the class, we must add this.function() to make them work
+            this.setProgress();
+          }
+        );
+      }
+    });
+  };
+
   // MarkunMarkCompleted() function
   // Create a markUnmarkCompleted() function to set the item completed in chrome storage
   markUnmarkCompleted = (id, completedStatus) => {
