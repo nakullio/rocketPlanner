@@ -1,13 +1,27 @@
 // import all action items to this class to use later on
 // we cannot have const fuction in a class, but we using an ES6 way
 class ActionItems {
-  // Create a addQuickActionItem() function
-  addQuickActionItem = () => {
-    // x
+  // Create a addQuickActionItem() function, then pass in text, website and'tab' data
+  addQuickActionItem = (id, text, tab, callback) => {
+    let website = null;
+    // setup the click id button, which quick action 2 = Link site for later
+    if (id == "quick-action-2") {
+      // if the id true, so we do let website, asf
+      // format the quickActionItem tab
+      website = {
+        url: tab.url,
+        fav_icon: tab.favIconUrl,
+        title: tab.title,
+      };
+    }
+
+    // call the add() function within this class with pass the text, website and callback function
+    this.add(text, website, callback);
   };
 
   // Create add() function to save the Action Item data in a database
-  add = (text, callback) => {
+  // add pass in website to null by deafult
+  add = (text, website = null, callback) => {
     // create an object for the value on a {key: value} chrome sync
     let actionItem = {
       // apply the uudv4 to get uniqe identifier on every data
@@ -19,6 +33,7 @@ class ActionItems {
       // add completed, which null for now
       completed: null,
       // structure the website data
+      website: website,
     };
 
     // get the data on chrome storage

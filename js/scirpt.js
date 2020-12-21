@@ -33,11 +33,20 @@ const renderActionItems = (actionItems) => {
 const handleQuickActionListener = (e) => {
   // get the text from listener that we've clicked
   const text = e.target.getAttribute("data-text");
-  // add the click button text into input action items
-  actionItemsUtils.add(text, (actionItem) => {
-    // catch the callback function and render it like this
-    renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+  // set up the specific click button to get the tab data
+  const id = e.target.getAttribute("data-id");
+  // call getCurrentTab
+  getCurrentTab().then((tab) => {
+    // call the addQuickActionItem from utils.js, with pass in text, website and tab
+    actionItemsUtils.addQuickActionItem(id, text, tab, (actionItem) => {
+      renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+    });
   });
+  // add the click button text into input action items
+  // actionItemsUtils.add(text, (actionItem) => {
+  //   // catch the callback function and render it like this
+  //   renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+  // });
 };
 
 // Create an event listener for quick action buttons
@@ -50,15 +59,22 @@ const createQuickActionListener = () => {
   });
 };
 
+// actually we want to wait the chrome.tabs.query to run and then we do getCurrentTab
 // Create a getCurrentTab() to get active tab
-const getCurrentTab = () => {
-  chrome.tabs.query(
-    { active: true, windowId: chrome.windows.WINDOW_ID_CURRENT },
-    (tabs) => {
-      console.log("Tabs", tabs);
-    }
-  );
-};
+// use async to return a new Promise we create
+async function getCurrentTab() {
+  // create a promise
+  return await new Promise((resolve, reject) => {
+    chrome.tabs.query(
+      { active: true, windowId: chrome.windows.WINDOW_ID_CURRENT },
+      (tabs) => {
+        console.log("Tabs", tabs);
+        // resolve or passback to current tab
+        resolve(tabs[0]);
+      }
+    );
+  });
+}
 
 addItemForm.addEventListener("submit", (e) => {
   // to prevent auto loading progressbar, we set preventdefault on 'e'
@@ -69,7 +85,7 @@ addItemForm.addEventListener("submit", (e) => {
   // we want to check if the itemText inside form was inputed empty, we want to prevent that
   if (itemText) {
     // add the empty function ()=>{} to make callback as a function
-    actionItemsUtils.add(itemText, (actionItem) => {
+    actionItemsUtils.add(itemText, null, (actionItem) => {
       // call the renderActionItem once we've got the text, asthis
       renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
       // after we enter the vlaue on actionItem form. we'd like to clear the value in it to reset the form
