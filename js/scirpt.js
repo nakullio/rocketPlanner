@@ -50,6 +50,16 @@ const createQuickActionListener = () => {
   });
 };
 
+// Create a getCurrentTab() to get active tab
+const getCurrentTab = () => {
+  chrome.tabs.query(
+    { active: true, windowId: chrome.windows.WINDOW_ID_CURRENT },
+    (tabs) => {
+      console.log("Tabs", tabs);
+    }
+  );
+};
+
 addItemForm.addEventListener("submit", (e) => {
   // to prevent auto loading progressbar, we set preventdefault on 'e'
   e.preventDefault();

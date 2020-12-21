@@ -1,6 +1,11 @@
 // import all action items to this class to use later on
 // we cannot have const fuction in a class, but we using an ES6 way
 class ActionItems {
+  // Create a addQuickActionItem() function
+  addQuickActionItem = () => {
+    // x
+  };
+
   // Create add() function to save the Action Item data in a database
   add = (text, callback) => {
     // create an object for the value on a {key: value} chrome sync
@@ -13,6 +18,7 @@ class ActionItems {
       text: text,
       // add completed, which null for now
       completed: null,
+      // structure the website data
     };
 
     // get the data on chrome storage
