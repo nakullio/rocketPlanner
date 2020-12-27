@@ -26,7 +26,7 @@ storage.get(["actionItems"], (data) => {
 const renderActionItems = (actionItems) => {
   // loop through (using forEach) the actionItems
   actionItems.forEach((item) => {
-    renderActionItem(item.text, item.id, item.completed);
+    renderActionItem(item.text, item.id, item.completed, item.website);
   });
 };
 
@@ -39,7 +39,12 @@ const handleQuickActionListener = (e) => {
   getCurrentTab().then((tab) => {
     // call the addQuickActionItem from utils.js, with pass in text, website and tab
     actionItemsUtils.addQuickActionItem(id, text, tab, (actionItem) => {
-      renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+      renderActionItem(
+        actionItem.text,
+        actionItem.id,
+        actionItem.completed,
+        actionItem.website
+      );
     });
   });
   // add the click button text into input action items
@@ -87,7 +92,12 @@ addItemForm.addEventListener("submit", (e) => {
     // add the empty function ()=>{} to make callback as a function
     actionItemsUtils.add(itemText, null, (actionItem) => {
       // call the renderActionItem once we've got the text, asthis
-      renderActionItem(actionItem.text, actionItem.id, actionItem.completed);
+      renderActionItem(
+        actionItem.text,
+        actionItem.id,
+        actionItem.completed,
+        actionItem.website
+      );
       // after we enter the vlaue on actionItem form. we'd like to clear the value in it to reset the form
       addItemForm.elements.namedItem("itemText").value = "";
     });
@@ -130,7 +140,7 @@ const handleDeleteEventListener = (e) => {
 };
 
 // create a renderActionItem() function
-const renderActionItem = (text, id, completed) => {
+const renderActionItem = (text, id, completed, website = null) => {
   // the goal is to create HTML structure using javascrip, by mirroring the created HTML structure that we've did
   // create the individual element function to easily reacting on every changes on action item lists, instead of using inerHTML , which quite bit difficult to arrange
 
@@ -167,12 +177,44 @@ const renderActionItem = (text, id, completed) => {
   textEl.textContent = text;
   deleteEl.innerHTML = `<i class="fas fa-times"></i>`;
   // append the main element to add more action item list on the main element container
+
   mainElement.appendChild(checkEl);
   mainElement.appendChild(textEl);
   mainElement.appendChild(deleteEl);
+
   // this is the main element structure
   element.appendChild(mainElement);
+  // if website =null, then
+  if (website) {
+    let linkContainer = createLinkContainer(
+      website.url,
+      website.fav_icon,
+      website.title
+    );
+    // append the element linkContainer
+    element.appendChild(linkContainer);
+  }
+
   // all of those structure above create from bottom to top
   // using prepend to ensure actionItem list was inserted above first child
   itemList.prepend(element);
+};
+
+const createLinkContainer = (url, favIcon, title) => {
+  //  the goal is to create HTML structure using javascrip, by mirroring the created HTML structure
+  let element = document.createElement("div");
+  element.classList.add("actionItem__linkContainer");
+  element.innerHTML = `
+  <a href="${url}" target="_blank">
+  <div class="actionItem__link">
+    <div class="actionItem__favIcon">
+      <img src="${favIcon}" alt="">
+    </div>
+    <div class="actionItem__title">
+    <span>${title}</span>
+    </div>
+  </div>
+</a>
+  `;
+  return element;
 };
