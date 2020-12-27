@@ -14,6 +14,8 @@ storage.get(["actionItems"], (data) => {
   createQuickActionListener();
   // call the renderActionItems with pass the actionItems
   renderActionItems(actionItems);
+  // call the createUpdateModal listener
+  createUpdateNameDialogListener();
   actionItemsUtils.setProgress();
   chrome.storage.onChanged.addListener(() => {
     console.log("changed");
@@ -27,6 +29,15 @@ const renderActionItems = (actionItems) => {
   // loop through (using forEach) the actionItems
   actionItems.forEach((item) => {
     renderActionItem(item.text, item.id, item.completed, item.website);
+  });
+};
+
+const createUpdateNameDialogListener = () => {
+  let greetingName = document.querySelector(".greeting__name");
+  // add eventListener on click
+  greetingName.addEventListener("click", () => {
+    //  open the modal from bootstrap, and change the ID as per our HTML updateNameModal id
+    $("#updateNameModal").modal("show");
   });
 };
 
