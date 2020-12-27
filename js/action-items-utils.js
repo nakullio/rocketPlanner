@@ -60,6 +60,16 @@ class ActionItems {
     });
   };
 
+  // create a saveName()
+  saveName = (name, callback) => {
+    storage.set(
+      {
+        name: name,
+      },
+      callback
+    );
+  };
+
   // Create remove() function to remove the item from Chrome Storage
   remove = (id, callback) => {
     //   remove the actionItems

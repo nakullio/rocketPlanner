@@ -8,14 +8,19 @@ let storage = chrome.storage.sync;
 // initialize the Class function
 let actionItemsUtils = new ActionItems();
 
-storage.get(["actionItems"], (data) => {
+storage.get(["actionItems", "name"], (data) => {
   let actionItems = data.actionItems;
+  // save the changed name to storage
+  let name = data.name;
+  setUsersName(name);
+  // call the createQuickActionListener
   console.log(actionItems);
   createQuickActionListener();
   // call the renderActionItems with pass the actionItems
   renderActionItems(actionItems);
   // call the createUpdateModal listener
   createUpdateNameDialogListener();
+  createUpdateNameListener();
   actionItemsUtils.setProgress();
   chrome.storage.onChanged.addListener(() => {
     console.log("changed");
@@ -23,6 +28,13 @@ storage.get(["actionItems"], (data) => {
     actionItemsUtils.setProgress();
   });
 });
+
+//  create set the user's name on the front end
+const setUsersName = (name) => {
+  //  what if the name still nothing, not exist at first
+  let newName = name ? name : "Add Name";
+  document.querySelector(".name__value").innerText = newName;
+};
 
 // Create renderActionItems() function, with pass the actionItems
 const renderActionItems = (actionItems) => {
@@ -37,8 +49,36 @@ const createUpdateNameDialogListener = () => {
   // add eventListener on click
   greetingName.addEventListener("click", () => {
     //  open the modal from bootstrap, and change the ID as per our HTML updateNameModal id
+    storage.get(["name"], () => {
+      let name = data.name ? data.name : "";
+      document.getElementById("inputName").value = name;
+    });
+
     $("#updateNameModal").modal("show");
   });
+};
+
+//  create a handleUpdateName function
+const handleUpdateName = (e) => {
+  // what we going to do, here it is
+  // 1. get the input text
+  const name = document.getElementById("inputName").value;
+  // check if there is a value, the we save the name
+  if (name) {
+    // 2. save the name
+    actionItemsUtils.saveName(name, () => {
+      //  set the user's name on front end, and call the setUserName()
+      setUsersName(name);
+      $("#updateNameModal").modal("hide");
+    });
+  }
+};
+
+//  create a createUpdateNameListener() function for when Save CHanges is clicked
+const createUpdateNameListener = () => {
+  let element = document.querySelector("#updateName");
+  // addEventlistener on the click
+  element.addEventListener("click", handleUpdateName);
 };
 
 const handleQuickActionListener = (e) => {
