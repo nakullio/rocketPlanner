@@ -25,6 +25,22 @@ body {
   color: #6c757d;
   font-size: 1.5rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.greeting__name i {
+  color: #6c757d;
+  font-size: 0.8em;
+  margin-left: 4px;
+  /* to hide the icon, before hover */
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+/* when hovering the greeting__name, we target the i to appear */
+.greeting__name:hover i {
+  opacity: 1;
 }
 
 .progresContainer {
