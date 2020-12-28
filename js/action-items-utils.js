@@ -128,8 +128,22 @@ class ActionItems {
       let progress = 0;
       // calculate the progress
       progress = completedItems / totalItems;
+      // call the setbrowserbadge
+      this.setBrowserBadge(totalItems - completedItems);
       // animating the progressbar using circle.animate
       circle.animate(progress);
     });
+  };
+
+  // 1.create a setBrowserBadge() function to add a browser badge to show number of action items
+  // 2. pass the todoItems to know how many items we had to do
+  setBrowserBadge = (todoItems) => {
+    // option for notificationo badge if reach >= 9
+    let text = `${todoItems}`;
+    if (todoItems > 9) {
+      text = "9+";
+    }
+    // use the backtic and make a string `${todoItems}`
+    chrome.browserAction.setBadgeText({ text: text });
   };
 }
