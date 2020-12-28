@@ -13,8 +13,8 @@ storage.get(["actionItems", "name"], (data) => {
   // save the changed name to storage
   let name = data.name;
   setUsersName(name);
+  setGreeting();
   // call the createQuickActionListener
-  console.log(actionItems);
   createQuickActionListener();
   // call the renderActionItems with pass the actionItems
   renderActionItems(actionItems);
@@ -268,4 +268,27 @@ const createLinkContainer = (url, favIcon, title) => {
 </a>
   `;
   return element;
+};
+
+// Create a setGreeting) function
+const setGreeting = () => {
+  let greeting = "Good  ";
+  // set date function
+  const date = new Date();
+  // get hours
+  const hours = date.getHours();
+  if (hours >= 5 && hours <= 11) {
+    greeting += "Morning, ";
+  } else if (hours >= 12 && hours <= 16) {
+    greeting += "Afternoon, ";
+  } else if (hours >= 17 && hours <= 20) {
+    greeting += "Evening, ";
+  } else if (hours >= 17 && hours <= 20) {
+    greeting += "Evening, ";
+  } else {
+    greeting += "Night,";
+  }
+
+  //  return on html
+  document.querySelector(".greeting__type").innerText = greeting;
 };
