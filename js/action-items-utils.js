@@ -62,7 +62,7 @@ class ActionItems {
 
   // create a saveName()
   saveName = (name, callback) => {
-    storage.set(
+    chrome.storage.sync.set(
       {
         name: name,
       },
@@ -74,7 +74,7 @@ class ActionItems {
   remove = (id, callback) => {
     //   remove the actionItems
     // 1. grab the list of items
-    storage.get(["actionItems"], (data) => {
+    chrome.storage.sync.get(["actionItems"], (data) => {
       // 2. find item we clicked on
       let items = data.actionItems;
       // 3. find the index
@@ -96,7 +96,7 @@ class ActionItems {
   // Create a markUnmarkCompleted() function to set the item completed in chrome storage
   markUnmarkCompleted = (id, completedStatus) => {
     // 1. grab the list of items
-    storage.get(["actionItems"], (data) => {
+    chrome.storage.sync.get(["actionItems"], (data) => {
       // 2. find item we clicked on
       let items = data.actionItems;
       // 3. find the index
@@ -115,7 +115,7 @@ class ActionItems {
   // Cretae a setProgress() function
   setProgress = () => {
     // grab the list of item
-    storage.get(["actionItems"], (data) => {
+    chrome.storage.sync.get(["actionItems"], (data) => {
       let actionItems = data.actionItems;
       // how many completed item do we have?
       let completedItems;
@@ -131,7 +131,7 @@ class ActionItems {
       // call the setbrowserbadge
       this.setBrowserBadge(totalItems - completedItems);
       // animating the progressbar using circle.animate
-      circle.animate(progress);
+      if (typeof window.circle !== "undefined") circle.animate(progress);
     });
   };
 
