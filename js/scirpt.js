@@ -39,10 +39,36 @@ const setUsersName = (name) => {
 
 // Create renderActionItems() function, with pass the actionItems
 const renderActionItems = (actionItems) => {
-  // loop through (using forEach) the actionItems
-  actionItems.forEach((item) => {
+  // filter out completed items from yesterday
+  const filteredItems = filterActionItems(actionItems);
+
+  // loop through (using forEach), then render the filteredItems
+  filteredItems.forEach((item) => {
     renderActionItem(item.text, item.id, item.completed, item.website);
   });
+  storage.set({
+    actionItems: filteredItems,
+  });
+};
+
+//  create a filterActionItems() function
+const filterActionItems = (actionItems) => {
+  var currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+
+  //  use es6 .filter()
+  const filteredItems = actionItems.filter((item) => {
+    if (item.completed) {
+      // check if completed date is less than today date
+      const completedDate = new Date(item.completed);
+      if (completedDate < currentDate) {
+        // we didn't want to show them, so return it false
+        return false;
+      }
+    }
+    return true;
+  });
+  return filteredItems;
 };
 
 const createUpdateNameDialogListener = () => {
