@@ -137,6 +137,7 @@ body {
 .actionItem__checkBox i {
   color: #56e452;
   opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }
 
 /* create the opacity on checkbox hover */
@@ -217,6 +218,11 @@ body {
   transition: border-color 0.2s ease-out;
 }
 
+.actionItem__item.completed .actionItem__link {
+  background-color: #b0f1ab;
+  border-color: #56e452;
+}
+
 .actionItem__favIcon {
   flex-basis: 45px;
   display: flex;
@@ -248,4 +254,9 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.modal-dialog {
+  margin-left: 2rem;
+  margin-right: 2rem;
 }

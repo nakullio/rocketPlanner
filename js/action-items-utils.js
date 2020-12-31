@@ -126,8 +126,14 @@ class ActionItems {
       // date = true
       completedItems = actionItems.filter((item) => item.completed).length;
       let progress = 0;
+      // any number devided by 0 is not a number
+      if (totalItems > 0) {
+        progress = completedItems / totalItems;
+      }
+
       // calculate the progress
-      progress = completedItems / totalItems;
+
+      console.log(progress);
       // call the setbrowserbadge
       this.setBrowserBadge(totalItems - completedItems);
       // animating the progressbar using circle.animate
