@@ -7,6 +7,17 @@ chrome.contextMenus.create({
   contexts: ["all"],
 });
 
+// use chrome.runtime.onInstalled function to avoid error on actionItems
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason == "install") {
+    console.log("On Installed");
+    chrome.storage.sync.set({
+      // set action items in Chrome Storage to an array []
+      actionItems: [],
+    });
+  }
+});
+
 // capture the Context Menu click using contectMenus.onClicked.addListener
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   //   check the context menu
