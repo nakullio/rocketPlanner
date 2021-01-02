@@ -1,8 +1,10 @@
 body {
   width: 450px;
-  min-height: 562px;
-  margin: 12px;
   padding: 12px 12px 27px 12px;
+}
+
+.main {
+  min-height: 562px;
 }
 
 .greeting img {

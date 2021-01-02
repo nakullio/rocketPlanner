@@ -121,7 +121,8 @@ const handleQuickActionListener = (e) => {
         actionItem.text,
         actionItem.id,
         actionItem.completed,
-        actionItem.website
+        actionItem.website,
+        250
       );
     });
   });
@@ -174,7 +175,8 @@ addItemForm.addEventListener("submit", (e) => {
         actionItem.text,
         actionItem.id,
         actionItem.completed,
-        actionItem.website
+        actionItem.website,
+        250
       );
       // after we enter the vlaue on actionItem form. we'd like to clear the value in it to reset the form
       addItemForm.elements.namedItem("itemText").value = "";
@@ -218,7 +220,13 @@ const handleDeleteEventListener = (e) => {
 };
 
 // create a renderActionItem() function
-const renderActionItem = (text, id, completed, website = null) => {
+const renderActionItem = (
+  text,
+  id,
+  completed,
+  website = null,
+  animationDuration = 450
+) => {
   // the goal is to create HTML structure using javascrip, by mirroring the created HTML structure that we've did
   // create the individual element function to easily reacting on every changes on action item lists, instead of using inerHTML , which quite bit difficult to arrange
 
@@ -276,6 +284,25 @@ const renderActionItem = (text, id, completed, website = null) => {
   // all of those structure above create from bottom to top
   // using prepend to ensure actionItem list was inserted above first child
   itemList.prepend(element);
+  // apply to all element for animateDown
+  // in jQuery format, and css selector
+  let jElement = $(`div[data-id="${id}"]`);
+  // call the animateDown after renderActionItem, and passing the element
+  animateDown(jElement, animationDuration);
+};
+
+const animateDown = (element, duration) => {
+  console.log(duration);
+  // set an flexible height based on the height element tahta available
+  let height = element.innerHeight();
+  // animating the jElement
+  element.css({ marginTop: `-${height}px`, opacity: 0 }).animate(
+    {
+      opacity: 1,
+      marginTop: "12px",
+    },
+    duration
+  );
 };
 
 const createLinkContainer = (url, favIcon, title) => {
