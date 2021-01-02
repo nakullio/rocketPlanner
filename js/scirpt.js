@@ -208,14 +208,15 @@ const handleDeleteEventListener = (e) => {
   // grab the id
   const id = e.target.parentElement.parentElement.getAttribute("data-id");
   const parent = e.target.parentElement.parentElement;
+  let jElement = $(`div[data-id="${id}"]`);
 
   //  call the remove() function, and dont forget to pass in the sepcifict targeted 'td'
   //  this remove() will be remove items from chrome storage
-  console.log("this is id", id);
   // debug and callback
   actionItemsUtils.remove(id, () => {
+    // call the animateUp
+    animateUp(jElement);
     // remove from the DOM element using ChildNode.remove() method
-    parent.remove();
   });
 };
 
@@ -291,8 +292,22 @@ const renderActionItem = (
   animateDown(jElement, animationDuration);
 };
 
+const animateUp = (element) => {
+  let height = element.innerHeight();
+  element.animate(
+    {
+      opacity: 0,
+      marginTop: `-${height}px`,
+    },
+    250,
+    () => {
+      // remove the element when the animation completed
+      element.remove();
+    }
+  );
+};
+
 const animateDown = (element, duration) => {
-  console.log(duration);
   // set an flexible height based on the height element tahta available
   let height = element.innerHeight();
   // animating the jElement
