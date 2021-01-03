@@ -1,6 +1,6 @@
-##Screenshots
+#Screenshots
 
-##Description
+#Description
 
 The best way to plan your day and motivate you to take action!
 Organize your day and take action 🚀
